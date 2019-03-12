@@ -1,6 +1,6 @@
 'use strict';
 
-// Last time updated: 2019-02-06 11:32:40 AM UTC
+// Last time updated: 2019-03-12 7:33:26 AM UTC
 
 // ________________
 // RecordRTC v5.5.4
@@ -2015,7 +2015,7 @@ function MediaStreamRecorder(mediaStream, config) {
     }
 
     if (typeof MediaRecorder === 'undefined') {
-        throw 'Your browser does not supports Media Recorder API. Please try other modules e.g. WhammyRecorder or StereoAudioRecorder.';
+        throw 'Your browser does not support the Media Recorder API. Please try other modules e.g. WhammyRecorder or StereoAudioRecorder.';
     }
 
     config = config || {
@@ -5646,7 +5646,7 @@ if (typeof RecordRTC !== 'undefined') {
  */
 function WebAssemblyRecorder(stream, config) {
     // based on: github.com/GoogleChromeLabs/webm-wasm
-
+    var consume = false;
     if (typeof ReadableStream === 'undefined' || typeof WritableStream === 'undefined') {
         // because it fixes readable/writable streams issues
         console.error('Following polyfill is strongly recommended: https://unpkg.com/@mattiasbuelens/web-streams-polyfill/dist/polyfill.min.js');
@@ -5658,6 +5658,7 @@ function WebAssemblyRecorder(stream, config) {
     config.height = config.height || 480;
     config.frameRate = config.frameRate || 30;
     config.bitrate = config.bitrate || 1200;
+    config.videoId = config.videoId || 'video';
 
     function createBufferURL(buffer, type) {
         return URL.createObjectURL(new Blob([buffer], {
@@ -5669,9 +5670,12 @@ function WebAssemblyRecorder(stream, config) {
         return new ReadableStream({
             start: function(controller) {
                 var cvs = document.createElement('canvas');
-                var video = document.createElement('video');
-                video.srcObject = stream;
-                video.onplaying = function() {
+                var video = document.getElementById(config.videoId);
+
+                function startConsuming() {
+                    if (!consume) {
+                        return;
+                    }
                     cvs.width = config.width;
                     cvs.height = config.height;
                     var ctx = cvs.getContext('2d');
@@ -5683,8 +5687,8 @@ function WebAssemblyRecorder(stream, config) {
                         );
                         setTimeout(f, frameTimeout);
                     }, frameTimeout);
-                };
-                video.play();
+                }
+                setTimeout(startConsuming, 100);
             }
         });
     }
@@ -5774,6 +5778,7 @@ function WebAssemblyRecorder(stream, config) {
      */
     this.pause = function() {
         isPaused = true;
+        consume = false;
     };
 
     /**
@@ -5810,6 +5815,7 @@ function WebAssemblyRecorder(stream, config) {
      * });
      */
     this.stop = function(callback) {
+        consume = false;
         terminate();
 
         this.blob = new Blob(arrayOfBuffers, {
