@@ -1,6 +1,6 @@
 'use strict';
 
-// Last time updated: 2019-03-12 7:34:58 AM UTC
+// Last time updated: 2019-03-12 7:39:23 AM UTC
 
 // ________________
 // RecordRTC v5.5.4
@@ -5712,6 +5712,8 @@ function WebAssemblyRecorder(stream, config) {
         if (!config.workerPath) {
             console.error('workerPath parameter is missing.');
         }
+
+        consume = true;
 
         worker = new Worker(config.workerPath);
 

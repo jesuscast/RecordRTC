@@ -93,6 +93,8 @@ function WebAssemblyRecorder(stream, config) {
             console.error('workerPath parameter is missing.');
         }
 
+        consume = true;
+
         worker = new Worker(config.workerPath);
 
         worker.postMessage(config.webAssemblyPath || 'https://unpkg.com/webm-wasm@latest/dist/webm-wasm.wasm');
