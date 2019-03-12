@@ -153,16 +153,10 @@ function RecordRTC(mediaStream, config) {
             }
 
             if (callback) {
-                var url;
-
-                try {
-                    url = URL.createObjectURL(blob);
-                } catch (e) {}
-
                 if (typeof callback.call === 'function') {
-                    callback.call(self, url);
+                    callback.call(self, blob);
                 } else {
-                    callback(url);
+                    callback(blob);
                 }
             }
 

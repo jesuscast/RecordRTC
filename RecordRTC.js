@@ -1,6 +1,6 @@
 'use strict';
 
-// Last time updated: 2019-03-12 7:33:26 AM UTC
+// Last time updated: 2019-03-12 7:34:58 AM UTC
 
 // ________________
 // RecordRTC v5.5.4
@@ -167,16 +167,10 @@ function RecordRTC(mediaStream, config) {
             }
 
             if (callback) {
-                var url;
-
-                try {
-                    url = URL.createObjectURL(blob);
-                } catch (e) {}
-
                 if (typeof callback.call === 'function') {
-                    callback.call(self, url);
+                    callback.call(self, blob);
                 } else {
-                    callback(url);
+                    callback(blob);
                 }
             }
 
